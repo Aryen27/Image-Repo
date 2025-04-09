@@ -32,6 +32,11 @@ app.post("/login", async (req, res) => {
   } catch (err) {
     return res.status(404).json({ success: false, message: err });
   }
+  const match = await bcrypt.compare(password, storedUser.password);
+
+  if(!match) {
+    res.status(401).json({ success: false, message: 'Invalid credentials' });
+  }
   res.status(200).json({ success: true, message: `Welcome ${storedUser.name}` ,data: storedUser})
 });
 
