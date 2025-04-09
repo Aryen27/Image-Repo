@@ -20,12 +20,12 @@ const connection = await mysql.createConnection({
 // Multer Config  ({dest:'./data/'})
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, './data/')
+    cb(null, './data/');
   },
   filename: function (req, file, cb) {
     const suffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
     const ext = path.extname(file.originalname);
-    cb(null, file.fieldname+'-'+suffix+ext)
+    cb(null, file.fieldname + '-' + suffix + ext);
   }
 })
 
@@ -84,5 +84,6 @@ app.post("/signup", async (req, res) => {
 });
 
 app.post("/file", upload.single('profile'), async (req, res) => {
-  const profile = req.file;
+  const filename = req.file.filename;
+  return res.status(200).json({ success: true, message: `${filename} uploaded successfully` });
 })
