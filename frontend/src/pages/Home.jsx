@@ -28,11 +28,15 @@ function Home() {
   console.log(images);
 
   return (
-    <div>
-      {images?.map((img) => {
-       return <PhotosContainer key={img.id} about={img.about} title={img.title} />
-      })
+    <div className="container text-center p-3">
+    <div className="row">
+    {images?.map((img) => (
+        <div className="col-md-3 mb-4" key={img.id}>
+          <PhotosContainer about={img.about} title={img.title} />
+        </div>
+      ))
       }
+    </div>
     </div>
   )
 }
