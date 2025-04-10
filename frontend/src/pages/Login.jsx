@@ -20,7 +20,7 @@ function Login() {
         password: user.password
       }).then(function (res) {
         const { data, token } = res.data;
-        const storedUser= {'name': data.name, 'email': data.email}
+        const storedUser= {'uid': data.uid, 'name': data.name, 'email': data.email}
         login(storedUser, token);
       }) .catch(function (error) {
         console.log(error);

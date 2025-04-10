@@ -30,22 +30,23 @@ const storage = multer.diskStorage({
   filename: function (req, file, cb) {
     const suffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
     const ext = path.extname(file.originalname);
-    const uid = req.body.uid || 'unkown';
+    const uid = req._uid || 'unknown';
     cb(null, `uid${uid}-${file.fieldname}-${suffix}${ext}`);
   }
-})
+});
 
-const upload= multer({storage: storage})
+const upload= multer({storage})
 
 app.listen(PORT, () => {
   console.log("Server started at http://localhost:" + PORT);
 });
 
+
+// Authentication
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
   let storedUser= {name:'', email: '', password: ''};
   try {
-    // insert into users(name, email, password) values('Aryan', 'abc@gmail.com' , 'abc');
     const [results, fields] = await connection.query('SELECT * FROM users WHERE email=?', [email]);
     if (results.length == 0) {
       return res.status(404).json({ success: false, message: 'User not found' });
@@ -70,12 +71,7 @@ app.post("/login", async (req, res) => {
 
 app.post("/signup", async (req, res) => {
   const { name, email, password } = req.body;
-  /*
-  1. Check if user already exists: if exists alert
-  2. Hash password
-  3. Add user to db w/ hashed password
-  4.Add error handling for DB queries
-  */
+
   const [results, fields] = await connection.query('SELECT * FROM users WHERE email=?', [email]);
   if (results.length != 0) {
     return res.status(409).json({ success: false, message: 'User already exists' });
@@ -94,10 +90,35 @@ app.post("/signup", async (req, res) => {
 
 });
 
-app.post("/photo", upload.single('pic'),protect ,async (req, res) => {
+// Photos
+
+// Middleware to add uid to image name before uid is initialized
+const parseFields = multer().none();
+const attachUid = (req, res, next) => {
+  req._uid = req.body.uid;
+  next();
+};
+
+const tempStorage = multer().none();
+const idParser= (req, res, next) => {
+  req.uid = req.body.uid; 
+  next();
+}
+
+
+// Add photos
+app.post("/addphoto/:id", protect, (req, res, next) => {
+  req._uid = req.params.id;
+  next();
+}, upload.single('pic'), async (req, res) => {
   const filename = req.file.filename;
-  const { uid, about } = req.body;
-  const [results] = await connection.query('INSERT INTO imgrepo(title,about,userid) VALUES(?,?,?)', [filename, about, uid])
-  console.log(results);
+  const about = req.body.about;
+  const uid = req.params.id;
+
+  const [results] = await connection.query(
+    'INSERT INTO imgrepo(title, about, userid) VALUES (?, ?, ?)',
+    [filename, about, uid]
+  );
+
   return res.status(200).json({ success: true, message: `${filename} uploaded successfully` });
-})
+});

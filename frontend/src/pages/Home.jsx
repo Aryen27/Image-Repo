@@ -1,10 +1,10 @@
 import React from 'react'
-import { Outlet } from 'react-router-dom'
+import PhotosContainer from './PhotosConatiner'
 
 function Home() {
   return (
     <div>
-      <Outlet/>
+      <PhotosContainer/>
     </div>
   )
 }
