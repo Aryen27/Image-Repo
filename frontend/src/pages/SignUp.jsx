@@ -16,7 +16,7 @@ function SignUp() {
     console.log(user);
   }
   return (
-<div className='d-flex flex-column mx-auto my-4 py-4 gap-4 w-75'>
+<div className='d-flex flex-column mx-auto my-4 py-4 gap-4 w-50'>
     <h3 className='mx-auto'>Sign Up</h3>
   <div className='d-flex flex-column'>
       <label className='label-for'>Username</label>

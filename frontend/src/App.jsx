@@ -1,9 +1,11 @@
-import {createBrowserRouter, RouterProvider} from 'react-router-dom'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+
 import Login from './pages/Login';
 import SignUp from './pages/SignUp';
 import AddPhoto from './pages/AddPhoto';
 import PhotosList from './pages/PhotosList';
 import Home from './pages/Home';
+import { AuthProvider } from './context/authContext';
 
 const router = createBrowserRouter([  
   {
@@ -35,7 +37,9 @@ function App() {
 
   return (
     <div>
+    <AuthProvider>
     <RouterProvider router={router}/>
+    </AuthProvider >
     </div>
   )
 }
