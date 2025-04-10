@@ -1,18 +1,31 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 function Login() {
+    const [user, setUser] = useState({
+      email: '',
+      password: '',
+    });
+  
+    const handleChange = (e) => {
+      setUser({ ...user, [e.target.id]: e.target.value });
+    }
+  
+    const handleSubmit = (e) => {
+      e.preventDefault();
+      console.log(user);
+    }
   return (
     <div className='d-flex flex-column mx-auto my-4 py-4 gap-4 w-75'>
         <h3 className='mx-auto'>Login</h3>
       <div className='d-flex flex-column'>
       <label className='label-for'>Email</label>
-      <input class="form-control" type="text" placeholder="abc@gmail.com" aria-label="default input example"/>
+      <input className="form-control" id='email' type="text" placeholder="abc@gmail.com" aria-label="default input example" onChange={handleChange}/>
       </div>
       <div className='d-flex flex-column'>
       <label className='label-for'>Password</label>
-      <input class="form-control" type="text" placeholder="Your Password" aria-label="default input example"/>
+      <input className="form-control" id='password' type="text" placeholder="Your Password" aria-label="default input example" onChange={handleChange}/>
       </div>
-      <button className='btn btn-success w-25 mx-auto'>Submit</button>
+      <button className='btn btn-success w-25 mx-auto' onClick={handleSubmit} type='submit'>Submit</button>
     </div>
   )
 }
