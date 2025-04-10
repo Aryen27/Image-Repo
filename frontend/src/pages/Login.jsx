@@ -15,14 +15,12 @@ function Login() {
   
     const handleSubmit = (e) => {
       e.preventDefault();
-      console.log(user);
       axios.post('http://localhost:3000/login', {
         email: user.email,
         password: user.password
       }).then(function (res) {
         const { data, token } = res.data;
         const storedUser= {'name': data.name, 'email': data.email}
-        console.log(storedUser);
         login(storedUser, token);
       }) .catch(function (error) {
         console.log(error);

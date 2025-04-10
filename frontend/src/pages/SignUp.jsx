@@ -1,10 +1,13 @@
 import React, { useState } from 'react'
+import axios from 'axios'
+import { useAuth } from '../context/authContext';
 
 function SignUp() {
   const [user, setUser] = useState({
     name: '',
     email: '',
     password: '',
+    confirmPass:'',
   });
 
   const handleChange = (e) => {
@@ -13,7 +16,20 @@ function SignUp() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(user);
+
+    if (user.confirmPass != user.password) {
+      alert('Password don\'t match!');
+    }
+
+    axios.post('http://localhost:3000/signup', {
+      name: user.name,
+      email: user.email,
+      password: user.password
+    }).then(function (res) {
+      alert(res.data.message);
+    }) .catch(function (error) {
+      console.log(error);
+    });
   }
   return (
 <div className='d-flex flex-column mx-auto my-4 py-4 gap-4 w-50'>
@@ -33,7 +49,7 @@ function SignUp() {
 
       <div className='d-flex flex-column'>
       <label className='label-for'>Confirm Password</label>
-      <input className="form-control" id='confirm-pass' type="text" placeholder="Confirm Password" aria-label="default input example"/>
+      <input className="form-control" id='confirmPass' type="text" placeholder="Confirm Password" aria-label="default input example" onChange={handleChange}/>
       </div>
   <button className='btn btn-success w-25 mx-auto' onClick={handleSubmit} type='submit'>Submit</button>
 </div>
