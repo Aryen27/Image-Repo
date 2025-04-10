@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
 import { useAuth } from '../context/authContext';
+import axios from 'axios'
 
 function Login() {
-  // const { login } = useAuth(); 
+  const { login } = useAuth(); 
     const [user, setUser] = useState({
       email: '',
       password: '',
@@ -15,6 +16,18 @@ function Login() {
     const handleSubmit = (e) => {
       e.preventDefault();
       console.log(user);
+      axios.post('http://localhost:3000/login', {
+        email: user.email,
+        password: user.password
+      }).then(function (res) {
+        const { data, token } = res.data;
+        const storedUser= {'name': data.name, 'email': data.email}
+        console.log(storedUser);
+        login(storedUser, token);
+      }) .catch(function (error) {
+        console.log(error);
+      });
+
     }
   return (
     <div className='d-flex flex-column mx-auto my-4 py-4 gap-4 w-50'>

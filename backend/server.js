@@ -8,6 +8,7 @@ import jwt from 'jsonwebtoken'
 import connectionCred from './db/connection.js';
 import { protect } from './middleware/protect.js';
 import { fileURLToPath } from 'url';
+import cors from 'cors'
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -15,6 +16,7 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 const PORT = 3000;
 
 // DB Config
@@ -28,7 +30,8 @@ const storage = multer.diskStorage({
   filename: function (req, file, cb) {
     const suffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
     const ext = path.extname(file.originalname);
-    cb(null, file.fieldname + '-' + suffix + ext);
+    const uid = req.body.uid || 'unkown';
+    cb(null, `uid${uid}-${file.fieldname}-${suffix}${ext}`);
   }
 })
 
@@ -93,5 +96,8 @@ app.post("/signup", async (req, res) => {
 
 app.post("/photo", upload.single('pic'),protect ,async (req, res) => {
   const filename = req.file.filename;
+  const { uid, about } = req.body;
+  const [results] = await connection.query('INSERT INTO imgrepo(title,about,userid) VALUES(?,?,?)', [filename, about, uid])
+  console.log(results);
   return res.status(200).json({ success: true, message: `${filename} uploaded successfully` });
 })
