@@ -11,15 +11,15 @@ const router = createBrowserRouter([
     element: <Login /> ,
   },
   {
-    path: "home",
+    path: "/photos",
     element: <Home />,
   },
   {
-    path: "signup",
+    path: "/signup",
     element: <SignUp />,
   },
   {
-    path: "addphoto",
+    path: "/photos/add",
     element: <AddPhoto />,
   },
 ]);

@@ -10,7 +10,7 @@ export const AuthProvider = ({ children }) => {
     const sessionUser = sessionStorage.getItem('user');
     const sessionToken = sessionStorage.getItem('token');
     if (sessionToken && sessionUser) {
-      setUser(sessionUser);
+      setUser(JSON.parse(sessionUser));
       setIsAuth(true);
     }
   }, []);

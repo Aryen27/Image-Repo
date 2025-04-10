@@ -109,12 +109,12 @@ const idParser = (req, res, next) => {
 };
 
 // Get photos by userid
-app.get("/photo/:id", protect, async (req, res) => {
+app.get("/photos/:id", protect, async (req, res) => {
   const userid = req.params.id;
   let images;
   try {
     const [results, fields] = await connection.query('SELECT * FROM imgrepo WHERE userid=?', [userid]);
-    let images = results;
+    images = results;
     return res.status(200).json(images);
   } catch (err) {
     console.log(err);
@@ -123,7 +123,7 @@ app.get("/photo/:id", protect, async (req, res) => {
 
 
 // Add photos
-app.post("/photo/:id", protect, (req, res, next) => {
+app.post("/photos/:id", protect, (req, res, next) => {
   req._uid = req.params.id;
   next();
 }, upload.single('pic'), async (req, res) => {
