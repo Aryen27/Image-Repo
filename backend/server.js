@@ -19,6 +19,9 @@ app.use(express.json());
 app.use(cors());
 const PORT = 3000;
 
+// Server images
+app.use('/images', express.static(path.join(__dirname, './data')));
+
 // DB Config
 const connection = connectionCred;
 
@@ -116,7 +119,7 @@ app.get("/photo/:id", protect, async (req, res) => {
   } catch (err) {
     console.log(err);
   }
-})
+});
 
 
 // Add photos
