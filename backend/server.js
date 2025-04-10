@@ -4,23 +4,26 @@ import 'dotenv/config';
 import bcrypt from 'bcrypt'
 import multer from 'multer'
 import path from 'path'
+import jwt from 'jsonwebtoken'
+import connectionCred from './db/connection.js';
+import { protect } from './middleware/protect.js';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 
 const app = express();
 app.use(express.json());
 const PORT = 3000;
 
 // DB Config
-const connection = await mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: process.env.DB_PASSWORD,
-  database: 'classwork',
-});
+const connection = connectionCred;
 
 // Multer Config  ({dest:'./data/'})
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, './data/');
+    cb(null, path.join(__dirname,'./data/'));
   },
   filename: function (req, file, cb) {
     const suffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
@@ -54,7 +57,12 @@ app.post("/login", async (req, res) => {
   if(!match) {
     res.status(401).json({ success: false, message: 'Invalid credentials' });
   }
-  res.status(200).json({ success: true, message: `Welcome ${storedUser.name}` ,data: storedUser})
+
+  const token = jwt.sign({ id: storedUser.uid }, process.env.JWT_SECRET_KEY, {
+    expiresIn: process.env.JWT_EXPIRY
+  });
+
+  res.status(200).json({ success: true, message: `Welcome ${storedUser.name}` , data: storedUser, token })
 });
 
 app.post("/signup", async (req, res) => {
@@ -83,7 +91,7 @@ app.post("/signup", async (req, res) => {
 
 });
 
-app.post("/file", upload.single('profile'), async (req, res) => {
+app.post("/photo", upload.single('pic'),protect ,async (req, res) => {
   const filename = req.file.filename;
   return res.status(200).json({ success: true, message: `${filename} uploaded successfully` });
 })
