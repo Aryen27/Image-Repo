@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
 import { useAuth } from '../context/authContext';
 import axios from 'axios'
+import {useNavigate} from 'react-router-dom'
 
 function Login() {
   const { login } = useAuth(); 
+  const navigate = useNavigate();
     const [user, setUser] = useState({
       email: '',
       password: '',
@@ -25,7 +27,7 @@ function Login() {
       }) .catch(function (error) {
         console.log(error);
       });
-
+      navigate('/photos')
     }
   return (
     <div className='d-flex flex-column mx-auto my-4 py-4 gap-4 w-50'>

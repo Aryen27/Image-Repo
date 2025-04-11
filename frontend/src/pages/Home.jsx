@@ -2,13 +2,14 @@ import React, { useEffect, useState } from 'react'
 import PhotosContainer from './PhotosConatiner'
 import axios from 'axios'
 import { useAuth } from '../context/authContext'
+import PhotoError from './PhotoError';
 
 axios.defaults.headers.common['Authorization'] = `Bearer ${sessionStorage.getItem('token')}`;
 
 function Home() {
   // imgrepo: about, title
   const { user } = useAuth();
-  const [images, setImages] = useState();
+  const [images, setImages] = useState(null);
 
   const baseUrl = 'http://localhost:3000/';
   
@@ -30,7 +31,9 @@ function Home() {
   return (
     <div className="container text-center p-3">
     <div className="row">
-    {images?.map((img) => (
+        {images == null || images.length ==0 ?
+          <PhotoError/> :
+          images?.map((img) => (
         <div className="col-md-3 mb-4" key={img.id}>
           <PhotosContainer about={img.about} title={img.title} />
         </div>
